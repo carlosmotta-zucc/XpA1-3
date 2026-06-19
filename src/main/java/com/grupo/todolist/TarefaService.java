@@ -41,7 +41,14 @@ public class TarefaService {
 
     /** RF03: marca a tarefa como CONCLUIDA e persiste. */
     public void concluir(int id) {
-        throw new UnsupportedOperationException("TODO(B)");
+        Tarefa tarefa = repository.buscarPorId(id);
+
+        if (tarefa == null) {
+            throw new IllegalArgumentException("Tarefa nao encontrada.");
+        }
+
+        tarefa.setStatus(Status.CONCLUIDA);
+        repository.salvarEmArquivo();
     }
 
     /** RF04: remove a tarefa. */

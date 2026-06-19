@@ -53,14 +53,20 @@ public class TarefaServiceTest {
     }
 
     @Test
-    @Disabled("TODO(B): concluir uma tarefa e verificar que o status virou CONCLUIDA (RF03)")
-    void deveMarcarTarefaComoConcluida() {
+    @Disabled("TODO(C): cadastrar tarefas com prioridades diferentes e verificar o filtro (RF05)")
+    void deveFiltrarTarefasPorPrioridade() {
         throw new UnsupportedOperationException("TODO");
     }
 
     @Test
-    @Disabled("TODO(C): cadastrar tarefas com prioridades diferentes e verificar o filtro (RF05)")
-    void deveFiltrarTarefasPorPrioridade() {
-        throw new UnsupportedOperationException("TODO");
+    void deveMarcarTarefaComoConcluida() throws IOException {
+        TarefaService service = novoService();
+
+        Tarefa tarefa = service.cadastrar("Finalizar relatorio", "Concluir a entrega",
+                Prioridade.MEDIA, LocalDate.of(2026, 7, 5), "Bruno");
+
+        service.concluir(tarefa.getId());
+
+        assertEquals(Status.CONCLUIDA, tarefa.getStatus());
     }
 }
