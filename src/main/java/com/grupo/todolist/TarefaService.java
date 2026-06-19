@@ -53,7 +53,10 @@ public class TarefaService {
 
     /** RF04: remove a tarefa. */
     public void remover(int id) {
-        throw new UnsupportedOperationException("TODO(B)");
+        if (repository.buscarPorId(id) == null) {
+            throw new IllegalArgumentException("Tarefa com id " + id + " nao encontrada.");
+        }
+        repository.remover(id);
     }
 
     /** RF05: filtra por status (PENDENTE / CONCLUIDA). */
