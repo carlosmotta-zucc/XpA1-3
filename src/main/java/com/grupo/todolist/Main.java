@@ -1,17 +1,13 @@
 package com.grupo.todolist;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
 /**
  * Ponto de entrada + menu de console.
  * Monta as dependencias e faz o loop do menu, chamando o TarefaService.
- *
- * ----------------------------------------------------------------
- * Responsavel sugerido: INTEGRANTE C (junto com os filtros/listagem)
- * Nao colocar regra de negocio aqui: so ler input, chamar o service
- * e imprimir o resultado.
- * ----------------------------------------------------------------
  */
 public class Main {
 
@@ -28,12 +24,12 @@ public class Main {
                 String entrada = scanner.nextLine().trim();
 
                 switch (entrada) {
-                    case "1" -> System.out.println("Opcao nao implementada ainda."); // TODO(B): cadastrar (RF01/RF07)
+                    case "1" -> cadastrarTarefa(service, scanner);
                     case "2" -> listarTarefas(service);
-                    case "3" -> System.out.println("Opcao nao implementada ainda."); // TODO(B): concluir (RF03)
+                    case "3" -> concluirTarefa(service, scanner);
                     case "4" -> removerTarefa(service, scanner);
                     case "5" -> filtrarTarefas(service, scanner);
-                    case "6" -> System.out.println("Opcao nao implementada ainda."); // TODO(C): atribuir responsavel (RF06)
+                    case "6" -> atribuirResponsavel(service, scanner);
                     case "0" -> {
                         executando = false;
                         System.out.println("Encerrando o sistema.");
@@ -56,6 +52,50 @@ public class Main {
         System.out.print("Escolha uma opcao: ");
     }
 
+    // --- MÉTODOS DE CADA OPÇÃO DO MENU ---
+
+    private static void cadastrarTarefa(TarefaService service, Scanner scanner) {
+        System.out.println("\n--- CADASTRAR TAREFA ---");
+        
+        System.out.print("Titulo: ");
+        String titulo = scanner.nextLine().trim();
+
+        System.out.print("Descricao: ");
+        String descricao = scanner.nextLine().trim();
+
+        System.out.print("Prioridade (ALTA, MEDIA ou BAIXA): ");
+        String prioEntrada = scanner.nextLine().trim().toUpperCase();
+        Prioridade prioridade;
+        try {
+            prioridade = Prioridade.valueOf(prioEntrada);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Prioridade invalida. Cadastro cancelado.");
+            return;
+        }
+
+        System.out.print("Prazo (Formato AAAA-MM-DD) ou deixe em branco: ");
+        String prazoEntrada = scanner.nextLine().trim();
+        LocalDate prazo = null;
+        if (!prazoEntrada.isEmpty()) {
+            try {
+                prazo = LocalDate.parse(prazoEntrada);
+            } catch (DateTimeParseException e) {
+                System.out.println("Data no formato invalido. Cadastro cancelado.");
+                return;
+            }
+        }
+
+        System.out.print("Responsavel (ou deixe em branco): ");
+        String responsavel = scanner.nextLine().trim();
+
+        try {
+            service.cadastrar(titulo, descricao, prioridade, prazo, responsavel);
+            System.out.println("Tarefa cadastrada com sucesso!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao cadastrar: " + e.getMessage());
+        }
+    }
+
     private static void listarTarefas(TarefaService service) {
         List<Tarefa> tarefas = service.listar();
         if (tarefas.isEmpty()) {
@@ -65,6 +105,39 @@ public class Main {
             for (Tarefa tarefa : tarefas) {
                 System.out.println(tarefa);
             }
+        }
+    }
+
+    private static void concluirTarefa(TarefaService service, Scanner scanner) {
+        System.out.println("\n--- CONCLUIR TAREFA ---");
+        System.out.print("ID da tarefa a concluir: ");
+        String entrada = scanner.nextLine().trim();
+        try {
+            int id = Integer.parseInt(entrada);
+            service.concluir(id);
+            System.out.println("Tarefa marcada como CONCLUIDA!");
+        } catch (NumberFormatException e) {
+            System.out.println("ID invalido. Informe um numero inteiro.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+    }
+
+    private static void removerTarefa(TarefaService service, Scanner scanner) {
+        System.out.print("ID da tarefa a remover: ");
+        String entrada = scanner.nextLine().trim();
+        int id;
+        try {
+            id = Integer.parseInt(entrada);
+        } catch (NumberFormatException e) {
+            System.out.println("ID invalido. Informe um numero inteiro.");
+            return;
+        }
+        try {
+            service.remover(id);
+            System.out.println("Tarefa removida com sucesso.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
         }
     }
 
@@ -104,8 +177,9 @@ public class Main {
         }
     }
 
-    private static void removerTarefa(TarefaService service, Scanner scanner) {
-        System.out.print("ID da tarefa a remover: ");
+    private static void atribuirResponsavel(TarefaService service, Scanner scanner) {
+        System.out.println("\n--- ATRIBUIR RESPONSAVEL ---");
+        System.out.print("ID da tarefa: ");
         String entrada = scanner.nextLine().trim();
         int id;
         try {
@@ -114,11 +188,15 @@ public class Main {
             System.out.println("ID invalido. Informe um numero inteiro.");
             return;
         }
+
+        System.out.print("Nome do novo responsavel: ");
+        String responsavel = scanner.nextLine().trim();
+
         try {
-            service.remover(id);
-            System.out.println("Tarefa removida com sucesso.");
+            service.atribuirResponsavel(id, responsavel);
+            System.out.println("Responsavel atribuido com sucesso!");
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erro: " + e.getMessage());
         }
     }
 
