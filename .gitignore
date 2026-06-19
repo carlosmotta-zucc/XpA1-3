@@ -1,0 +1,44 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Dependências
+node_modules/
+vendor/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Java
+*.class
+target/
+build/
+*.jar
+
+# Arquivos temporários e de build
+dist/
+out/
+tmp/
+temp/
+*.tmp
+
+# Variáveis de ambiente
+.env
+.env.local
