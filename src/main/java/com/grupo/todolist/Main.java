@@ -31,7 +31,7 @@ public class Main {
                     case "1" -> System.out.println("Opcao nao implementada ainda."); // TODO(B): cadastrar (RF01/RF07)
                     case "2" -> listarTarefas(service);
                     case "3" -> System.out.println("Opcao nao implementada ainda."); // TODO(B): concluir (RF03)
-                    case "4" -> System.out.println("Opcao nao implementada ainda."); // TODO(B): remover (RF04)
+                    case "4" -> removerTarefa(service, scanner);
                     case "5" -> filtrarTarefas(service, scanner);
                     case "6" -> System.out.println("Opcao nao implementada ainda."); // TODO(C): atribuir responsavel (RF06)
                     case "0" -> {
@@ -101,6 +101,24 @@ public class Main {
 
         } else {
             System.out.println("Opcao invalida.");
+        }
+    }
+
+    private static void removerTarefa(TarefaService service, Scanner scanner) {
+        System.out.print("ID da tarefa a remover: ");
+        String entrada = scanner.nextLine().trim();
+        int id;
+        try {
+            id = Integer.parseInt(entrada);
+        } catch (NumberFormatException e) {
+            System.out.println("ID invalido. Informe um numero inteiro.");
+            return;
+        }
+        try {
+            service.remover(id);
+            System.out.println("Tarefa removida com sucesso.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
 
