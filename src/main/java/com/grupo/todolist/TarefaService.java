@@ -1,6 +1,7 @@
 package com.grupo.todolist;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class TarefaService {
 
     /** RF02: retorna todas as tarefas. */
     public List<Tarefa> listar() {
-        throw new UnsupportedOperationException("TODO(C)");
+        return repository.listarTodas();
     }
 
     /** RF03: marca a tarefa como CONCLUIDA e persiste. */
@@ -50,12 +51,24 @@ public class TarefaService {
 
     /** RF05: filtra por status (PENDENTE / CONCLUIDA). */
     public List<Tarefa> filtrarPorStatus(Status status) {
-        throw new UnsupportedOperationException("TODO(C)");
+        List<Tarefa> resultado = new ArrayList<>();
+        for (Tarefa tarefa : repository.listarTodas()) {
+            if (tarefa.getStatus() == status) {
+                resultado.add(tarefa);
+            }
+        }
+        return resultado;
     }
 
     /** RF05: filtra por prioridade. */
     public List<Tarefa> filtrarPorPrioridade(Prioridade prioridade) {
-        throw new UnsupportedOperationException("TODO(C)");
+        List<Tarefa> resultado = new ArrayList<>();
+        for (Tarefa tarefa : repository.listarTodas()) {
+            if (tarefa.getPrioridade() == prioridade) {
+                resultado.add(tarefa);
+            }
+        }
+        return resultado;
     }
 
     /** RF06: vincula um responsavel a uma tarefa existente. */
