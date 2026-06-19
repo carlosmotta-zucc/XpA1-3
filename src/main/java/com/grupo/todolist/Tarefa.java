@@ -22,50 +22,63 @@ public class Tarefa {
     private LocalDate prazo;       // RF07
     private String responsavel;    // RF06
 
-    // TODO(A): construtor(es). Sugestao: receber titulo, descricao, prioridade, prazo, responsavel
-    //          e iniciar status como PENDENTE. O id pode ser definido pelo repositorio.
-
-    // TODO(A): getters e setters de cada campo abaixo.
+    /**
+     * Cria uma tarefa nova. O id permanece 0 ate o repositorio atribuir o valor real.
+     * Toda tarefa nasce com status PENDENTE (RF01).
+     */
+    public Tarefa(String titulo, String descricao, Prioridade prioridade,
+                  LocalDate prazo, String responsavel) {
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.prioridade = prioridade;
+        this.prazo = prazo;
+        this.responsavel = responsavel;
+        this.status = Status.PENDENTE;
+    }
 
     public int getId() {
-        throw new UnsupportedOperationException("TODO(A)");
+        return id;
     }
 
     public void setId(int id) {
-        throw new UnsupportedOperationException("TODO(A)");
+        this.id = id;
     }
 
     public String getTitulo() {
-        throw new UnsupportedOperationException("TODO(A)");
+        return titulo;
     }
 
     public String getDescricao() {
-        throw new UnsupportedOperationException("TODO(A)");
+        return descricao;
     }
 
     public Prioridade getPrioridade() {
-        throw new UnsupportedOperationException("TODO(A)");
+        return prioridade;
     }
 
     public Status getStatus() {
-        throw new UnsupportedOperationException("TODO(A)");
+        return status;
     }
 
     public void setStatus(Status status) {
-        throw new UnsupportedOperationException("TODO(A)");
+        this.status = status;
     }
 
     public LocalDate getPrazo() {
-        throw new UnsupportedOperationException("TODO(A)");
+        return prazo;
     }
 
     public String getResponsavel() {
-        throw new UnsupportedOperationException("TODO(A)");
+        return responsavel;
     }
 
-    // TODO(A): toString() amigavel para a listagem no console (RF02).
+    /** Linha amigavel para a listagem no console (RF02). */
     @Override
     public String toString() {
-        throw new UnsupportedOperationException("TODO(A)");
+        String prazoTexto = (prazo != null) ? prazo.toString() : "sem prazo";
+        String responsavelTexto = (responsavel != null && !responsavel.isBlank())
+                ? responsavel : "sem responsavel";
+        return String.format("[%d] %s | %s | prioridade: %s | prazo: %s | responsavel: %s",
+                id, titulo, status, prioridade, prazoTexto, responsavelTexto);
     }
 }

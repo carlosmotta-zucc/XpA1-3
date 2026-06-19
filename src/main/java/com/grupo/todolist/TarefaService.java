@@ -26,7 +26,11 @@ public class TarefaService {
     /** RF01 + RF07: cria e salva uma tarefa. Validar titulo obrigatorio. */
     public Tarefa cadastrar(String titulo, String descricao, Prioridade prioridade,
                             LocalDate prazo, String responsavel) {
-        throw new UnsupportedOperationException("TODO(B)");
+        if (titulo == null || titulo.isBlank()) {
+            throw new IllegalArgumentException("O titulo da tarefa e obrigatorio.");
+        }
+        Tarefa tarefa = new Tarefa(titulo, descricao, prioridade, prazo, responsavel);
+        return repository.salvar(tarefa);
     }
 
     /** RF02: retorna todas as tarefas. */
