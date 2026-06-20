@@ -22,10 +22,19 @@ public class Main {
             boolean executando = true;
 
             while (executando) {
+                limparTerminal();
                 exibirMenu();
                 try {
                     String entrada = scanner.nextLine().trim();
 
+                    if ("0".equals(entrada)) {
+                        executando = false;
+                        System.out.println("Encerrando o sistema.");
+                        continue;
+                    }
+
+                    // Cada secao comeca numa tela limpa, sem resquicios da anterior.
+                    limparTerminal();
                     switch (entrada) {
                         case "1" -> cadastrarTarefa(service, scanner);
                         case "2" -> listarTarefas(service);
@@ -33,12 +42,9 @@ public class Main {
                         case "4" -> removerTarefa(service, scanner);
                         case "5" -> filtrarTarefas(service, scanner);
                         case "6" -> atribuirResponsavel(service, scanner);
-                        case "0" -> {
-                            executando = false;
-                            System.out.println("Encerrando o sistema.");
-                        }
                         default -> System.out.println("Opcao invalida. Tente novamente.");
                     }
+                    pausar(scanner);
                 } catch (NoSuchElementException e) {
                     System.out.println("\nEntrada encerrada. Encerrando o sistema.");
                     executando = false;
@@ -57,6 +63,18 @@ public class Main {
         System.out.println("6 - Atribuir responsavel");
         System.out.println("0 - Sair");
         System.out.print("Escolha uma opcao: ");
+    }
+
+    /** Limpa o terminal via codigos ANSI (somente biblioteca padrao). */
+    private static void limparTerminal() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    /** Pausa ate o Enter, para o usuario ler o resultado antes da proxima limpeza. */
+    private static void pausar(Scanner scanner) {
+        System.out.print("\nPressione Enter para continuar...");
+        scanner.nextLine();
     }
 
     // --- MÉTODOS DE CADA OPÇÃO DO MENU ---
