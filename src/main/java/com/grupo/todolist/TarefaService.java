@@ -83,6 +83,11 @@ public class TarefaService {
 
     /** RF06: vincula um responsavel a uma tarefa existente. */
     public void atribuirResponsavel(int id, String responsavel) {
-        throw new UnsupportedOperationException("TODO(C)");
+        Tarefa tarefa = repository.buscarPorId(id);
+        if (tarefa == null) {
+            throw new IllegalArgumentException("Tarefa com id " + id + " nao encontrada.");
+        }
+        tarefa.setResponsavel(responsavel);
+        repository.salvarEmArquivo();
     }
 }

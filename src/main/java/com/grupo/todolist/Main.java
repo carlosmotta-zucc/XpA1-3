@@ -3,6 +3,8 @@ package com.grupo.todolist;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -21,20 +23,25 @@ public class Main {
 
             while (executando) {
                 exibirMenu();
-                String entrada = scanner.nextLine().trim();
+                try {
+                    String entrada = scanner.nextLine().trim();
 
-                switch (entrada) {
-                    case "1" -> cadastrarTarefa(service, scanner);
-                    case "2" -> listarTarefas(service);
-                    case "3" -> concluirTarefa(service, scanner);
-                    case "4" -> removerTarefa(service, scanner);
-                    case "5" -> filtrarTarefas(service, scanner);
-                    case "6" -> atribuirResponsavel(service, scanner);
-                    case "0" -> {
-                        executando = false;
-                        System.out.println("Encerrando o sistema.");
+                    switch (entrada) {
+                        case "1" -> cadastrarTarefa(service, scanner);
+                        case "2" -> listarTarefas(service);
+                        case "3" -> concluirTarefa(service, scanner);
+                        case "4" -> removerTarefa(service, scanner);
+                        case "5" -> filtrarTarefas(service, scanner);
+                        case "6" -> atribuirResponsavel(service, scanner);
+                        case "0" -> {
+                            executando = false;
+                            System.out.println("Encerrando o sistema.");
+                        }
+                        default -> System.out.println("Opcao invalida. Tente novamente.");
                     }
-                    default -> System.out.println("Opcao invalida. Tente novamente.");
+                } catch (NoSuchElementException e) {
+                    System.out.println("\nEntrada encerrada. Encerrando o sistema.");
+                    executando = false;
                 }
             }
         }
@@ -64,7 +71,7 @@ public class Main {
         String descricao = scanner.nextLine().trim();
 
         System.out.print("Prioridade (ALTA, MEDIA ou BAIXA): ");
-        String prioEntrada = scanner.nextLine().trim().toUpperCase();
+        String prioEntrada = scanner.nextLine().trim().toUpperCase(Locale.ROOT);
         Prioridade prioridade;
         try {
             prioridade = Prioridade.valueOf(prioEntrada);
@@ -97,15 +104,7 @@ public class Main {
     }
 
     private static void listarTarefas(TarefaService service) {
-        List<Tarefa> tarefas = service.listar();
-        if (tarefas.isEmpty()) {
-            System.out.println("Nenhuma tarefa cadastrada.");
-        } else {
-            System.out.println("\n--- Tarefas ---");
-            for (Tarefa tarefa : tarefas) {
-                System.out.println(tarefa);
-            }
-        }
+        imprimirTarefas(service.listar(), "--- Tarefas ---", "Nenhuma tarefa cadastrada.");
     }
 
     private static void concluirTarefa(TarefaService service, Scanner scanner) {
@@ -150,7 +149,7 @@ public class Main {
 
         if ("1".equals(opcao)) {
             System.out.print("Status (PENDENTE / CONCLUIDA): ");
-            String valor = scanner.nextLine().trim().toUpperCase();
+            String valor = scanner.nextLine().trim().toUpperCase(Locale.ROOT);
             Status status;
             try {
                 status = Status.valueOf(valor);
@@ -162,7 +161,7 @@ public class Main {
 
         } else if ("2".equals(opcao)) {
             System.out.print("Prioridade (ALTA / MEDIA / BAIXA): ");
-            String valor = scanner.nextLine().trim().toUpperCase();
+            String valor = scanner.nextLine().trim().toUpperCase(Locale.ROOT);
             Prioridade prioridade;
             try {
                 prioridade = Prioridade.valueOf(valor);
@@ -201,10 +200,14 @@ public class Main {
     }
 
     private static void exibirResultado(List<Tarefa> tarefas) {
+        imprimirTarefas(tarefas, "--- Resultado do Filtro ---", "Nenhuma tarefa encontrada com esse filtro.");
+    }
+
+    private static void imprimirTarefas(List<Tarefa> tarefas, String cabecalho, String mensagemVazia) {
         if (tarefas.isEmpty()) {
-            System.out.println("Nenhuma tarefa encontrada com esse filtro.");
+            System.out.println(mensagemVazia);
         } else {
-            System.out.println("\n--- Resultado do Filtro ---");
+            System.out.println("\n" + cabecalho);
             for (Tarefa tarefa : tarefas) {
                 System.out.println(tarefa);
             }

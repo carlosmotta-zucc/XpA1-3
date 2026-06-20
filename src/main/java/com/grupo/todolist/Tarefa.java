@@ -72,6 +72,10 @@ public class Tarefa {
         return responsavel;
     }
 
+    public void setResponsavel(String responsavel) {
+        this.responsavel = responsavel;
+    }
+
     /** Linha amigavel para a listagem no console (RF02). */
     @Override
     public String toString() {
