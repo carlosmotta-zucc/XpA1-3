@@ -1,0 +1,103 @@
+================================================================================
+ RELATORIO DE TESTES UNITARIOS - TO-DO LIST (Engenharia de Software / XP)
+================================================================================
+
+Arquivo de testes : src/test/java/com/grupo/todolist/TarefaServiceTest.java
+Framework         : JUnit 5 (Jupiter) - versao 5.10.2
+Camada testada    : TarefaService (regras de negocio) + TarefaRepository
+                    (persistencia em arquivo)
+Data da execucao  : 19/06/2026
+
+--------------------------------------------------------------------------------
+ ESTRATEGIA
+--------------------------------------------------------------------------------
+Cada teste cria um TarefaService novo, ligado a um TarefaRepository que aponta
+para um arquivo temporario isolado (@TempDir do JUnit). Isso garante que:
+  - os testes nao interferem uns nos outros;
+  - a persistencia real em arquivo .txt e exercitada (RF08);
+  - nenhum dado de teste suja o arquivo "tarefas.txt" da aplicacao.
+
+A metodologia XP exige no minimo 3 testes unitarios. Foram entregues 4, todos
+ativos (nenhum desabilitado).
+
+--------------------------------------------------------------------------------
+ TESTES REALIZADOS
+--------------------------------------------------------------------------------
+
+[1] deveCadastrarTarefaComStatusPendente
+    Requisito : RF01 / RF07 (cadastro de tarefa)
+    Objetivo  : Garantir que uma tarefa nova e criada corretamente.
+    Acao      : Cadastra "Estudar XP" com prioridade ALTA, prazo e responsavel.
+    Verifica  : - status inicial e PENDENTE;
+                - o titulo foi gravado corretamente;
+                - o repositorio atribuiu um id maior que zero.
+    Resultado : PASSOU
+
+[2] naoDeveCadastrarTarefaSemTitulo
+    Requisito : RF01 (validacao - titulo obrigatorio)
+    Objetivo  : Garantir que nao e possivel cadastrar tarefa sem titulo.
+    Acao      : Tenta cadastrar uma tarefa com titulo em branco ("  ").
+    Verifica  : - o sistema lanca IllegalArgumentException.
+    Resultado : PASSOU
+
+[3] deveFiltrarTarefasPorPrioridade
+    Requisito : RF05 (filtro por prioridade)
+    Objetivo  : Garantir que o filtro retorna apenas as tarefas da prioridade
+                escolhida.
+    Acao      : Cadastra uma tarefa ALTA e uma BAIXA; filtra por ALTA.
+    Verifica  : - o resultado contem exatamente 1 tarefa;
+                - essa tarefa tem prioridade ALTA.
+    Resultado : PASSOU
+
+[4] deveMarcarTarefaComoConcluida
+    Requisito : RF03 (concluir tarefa) + RF08 (persistencia)
+    Objetivo  : Garantir que concluir muda o status e que a mudanca e salva em
+                arquivo.
+    Acao      : Cadastra uma tarefa e chama concluir(id).
+    Verifica  : - o status do objeto vira CONCLUIDA;
+                - reabrindo um TarefaRepository NOVO a partir do mesmo arquivo,
+                  a tarefa recarregada continua CONCLUIDA (prova que persistiu).
+    Resultado : PASSOU
+
+--------------------------------------------------------------------------------
+ COBERTURA POR REQUISITO FUNCIONAL
+--------------------------------------------------------------------------------
+  RF01 / RF07 (cadastro)            -> testes [1] e [2]
+  RF03 (concluir)                   -> teste  [4]
+  RF05 (filtro por prioridade)      -> teste  [3]
+  RF08 (persistencia em arquivo)    -> teste  [4] (recarga do arquivo)
+
+--------------------------------------------------------------------------------
+ RESULTADO DA EXECUCAO (JUnit 5)
+--------------------------------------------------------------------------------
+  +-- JUnit Jupiter
+  |   +-- TarefaServiceTest
+  |       +-- deveCadastrarTarefaComStatusPendente()   OK
+  |       +-- deveFiltrarTarefasPorPrioridade()         OK
+  |       +-- deveMarcarTarefaComoConcluida()           OK
+  |       +-- naoDeveCadastrarTarefaSemTitulo()         OK
+
+  [ 4 tests found      ]
+  [ 0 tests skipped    ]
+  [ 4 tests started    ]
+  [ 0 tests aborted    ]
+  [ 4 tests successful ]
+  [ 0 tests failed     ]
+
+  >>> 4 testes executados, 4 com sucesso, 0 falhas, 0 ignorados.
+
+--------------------------------------------------------------------------------
+ COMO EXECUTAR
+--------------------------------------------------------------------------------
+  Com Maven:
+      mvn test
+
+  Sem Maven (usando o JUnit Platform Console Standalone):
+      cd src/main/java
+      javac -d ../../../bin com/grupo/todolist/*.java
+      javac -cp ../../../bin:junit-platform-console-standalone-1.10.2.jar \
+            -d ../../../bin ../test/java/com/grupo/todolist/TarefaServiceTest.java
+      java -jar junit-platform-console-standalone-1.10.2.jar \
+            execute -cp ../../../bin --scan-classpath
+
+================================================================================
